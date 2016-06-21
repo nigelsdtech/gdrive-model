@@ -1,0 +1,39 @@
+{
+  "name": "gdrive-model",
+  "version": "0.0.0",
+  "description": "Nodejs module for interacting with the google drive apis",
+  "main": "GdriveModel.js",
+  "scripts": {
+    "test": "sh scripts/test.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nigelsdtech/gdrive-model.git"
+  },
+  "keywords": [
+    "Google",
+    "Drive",
+    "API",
+    "nodejs",
+    "node",
+    "js"
+  ],
+  "author": "Nigel Stephen D'Souza",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nigelsdtech/gdrive-model/issues"
+  },
+  "dependencies": {
+    "googleapis": "^2.1.7",
+    "do-google-auth": "git://github.com/nigelsdtech/do-google-auth.git#v2.0.0"
+  },
+  "devDependencies": {
+    "config": "~1.21.0",
+    "chai": "~3.5.0",
+    "mocha": "~2.5.3"
+  },
+  "config": {
+    "appName": "gdrive-model",
+    "googleAuthScopes": "https://www.googleapis.com/auth/drive.file"
+  }
+}
