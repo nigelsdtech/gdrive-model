@@ -1,6 +1,6 @@
 {
   "name": "gdrive-model",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Nodejs module for interacting with the google drive apis",
   "main": "GdriveModel.js",
   "scripts": {
