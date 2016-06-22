@@ -2,49 +2,46 @@
 
 var cfg         = require('config'),
     chai        = require('chai'),
+    expect      = chai.expect,
     fs          = require('fs'),
     GdriveModel = require('../GdriveModel.js'),
     should      = chai.should()
 
-var timeout = (1000*10)
+var timeout = (1000*20)
 
 describe('Creating an instance of a gdrive-model', function () {
 
   this.timeout(timeout);
 
-  it('should error when not passing in one of the required parameters' , function() {
+  var requiredParams = [
+    { p: 'googleScopes',     c: cfg.auth.scopes},
+    { p: 'tokenFile',        c: cfg.auth.tokenFile},
+    { p: 'tokenDir',         c: cfg.auth.tokenFileDir},
+    { p: 'clientSecretFile', c: cfg.auth.clientSecretFile}
+  ]
 
-    var requiredParams = [
-      { p: 'googleScopes',     c: cfg.auth.scopes},
-      { p: 'tokenFile',        c: cfg.auth.tokenFile},
-      { p: 'tokenDir',         c: cfg.auth.tokenFileDir},
-      { p: 'clientSecretFile', c: cfg.auth.clientSecretFile}
-    ]
 
-    for (var i = 0; i < requiredParams.length; i++) {
+  requiredParams.forEach(function(rp) {
+
+    it('should error when not passing in ' + rp.p , function() {
 
       // Add all args except the current one due to be skipped
       var args = {}
       for (var j = 0; j < requiredParams.length; j++) {
-        if (i != j) {
+        if (requiredParams[j].p != rp.p) {
           args[requiredParams[j].p] = requiredParams[j].c
         }
       }
 
+      function fn () {var x = new GdriveModel(args);}
 
-      var error = {} ;
-      try {
-        var x = new GdriveModel(args);
-      } catch (e) {
-        error = e;
-      } finally {
-        error.should.be.a('Error')
-        error.message.should.equal('Gdrive Model - required parameter not set: ' + requiredParams[i].p)
-      }
-
-    }
+      expect(fn).to.throw(Error);
+      expect(fn).to.throw('Gdrive Model - required parameter not set: ' + rp.p);
+    });
 
   });
+
+
 
 
   it('should succeed when passing in all the required parameters', function (done) {
