@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nigelsdtech/gdrive-model.git"
+    "url": "git+https://github.com/nigelsdtech/gdrive-model.git"
   },
   "keywords": [
     "Google",
@@ -18,14 +18,19 @@
     "node",
     "js"
   ],
-  "author": "Nigel Stephen D'Souza",
+  "author": {
+    "name": "Nigel Stephen D'Souza"
+  },
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/nigelsdtech/gdrive-model/issues"
   },
   "dependencies": {
+    "do-google-auth": "git://github.com/nigelsdtech/do-google-auth.git#v2.0.0",
+    "google-auth-library": "0.9.8",
     "googleapis": "^2.1.7",
-    "do-google-auth": "git://github.com/nigelsdtech/do-google-auth.git#v2.0.0"
+    "jws": "3.0.0",
+    "string-template": "0.2.1"
   },
   "devDependencies": {
     "config": "~1.21.0",
@@ -35,5 +40,13 @@
   "config": {
     "appName": "gdrive-model",
     "googleAuthScopes": "https://www.googleapis.com/auth/drive.file"
-  }
+  },
+  "gitHead": "b8bd86a7f7a2e014a858b7b3c58f6afa16324e31",
+  "readme": "# gdrive-model\nEasy nodejs interface for working with Google drive\n",
+  "readmeFilename": "README.md",
+  "homepage": "https://github.com/nigelsdtech/gdrive-model#readme",
+  "_id": "gdrive-model@1.0.0",
+  "_shasum": "4aaa9144b4cbc569de1ec90bdf8a726f51013cc7",
+  "_from": "git://github.com/nigelsdtech/gdrive-model.git#b8bd86a7f7a2e014a858b7b3c58f6afa16324e31",
+  "_resolved": "git://github.com/nigelsdtech/gdrive-model.git#b8bd86a7f7a2e014a858b7b3c58f6afa16324e31"
 }

@@ -3,6 +3,7 @@
 . ~/bin/setup_node_env.sh
 
 appname=${PWD##*/}
-export NODE_APP_INSTANCE=${appname}"-test"
+export NODE_APP_INSTANCE="${appname}"
+export NODE_ENV="test"
 
-mocha test
+mocha -b --check-leaks --recursive test

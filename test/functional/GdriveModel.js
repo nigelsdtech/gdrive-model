@@ -4,7 +4,7 @@ var cfg         = require('config'),
     chai        = require('chai'),
     expect      = chai.expect,
     fs          = require('fs'),
-    GdriveModel = require('../GdriveModel.js'),
+    GdriveModel = require('../../GdriveModel.js'),
     should      = chai.should()
 
 var timeout = (1000*20)
@@ -62,23 +62,18 @@ describe('Creating an instance of a gdrive-model', function () {
 
 
 
-var newFileId, newFolderId, newUploadedLocalFileId;
+var newFileId, newFolderId, newUploadedLocalFileId, testFolderName;
+
+var g = new GdriveModel({
+  googleScopes: cfg.auth.scopes,
+  tokenFile: cfg.auth.tokenFile,
+  tokenDir: cfg.auth.tokenFileDir,
+  clientSecretFile: cfg.auth.clientSecretFile
+});
 
 describe('Using a gdrive-model to upload files', function (done) {
 
   this.timeout(timeout);
-  var g;
-
-  before( function(done) {
-    g = new GdriveModel({
-      googleScopes: cfg.auth.scopes,
-      tokenFile: cfg.auth.tokenFile,
-      tokenDir: cfg.auth.tokenFileDir,
-      clientSecretFile: cfg.auth.clientSecretFile
-    });
-
-    done();
-  })
 
 
   it('should throw an error when passed a local file and a media body' , function(done) {
@@ -98,7 +93,7 @@ describe('Using a gdrive-model to upload files', function (done) {
       }
     }, function (err, resp) {
 
-      should.exist(err)
+      err.should.be.an.error
       err.message.should.equal('GdriveModel.createFile - Media body and local file path passed');
       done();
     });
@@ -111,12 +106,13 @@ describe('Using a gdrive-model to upload files', function (done) {
 
     var d = new Date();
     var desc =  "Test folder created on " + d.toString();
+    testFolderName = "Test folder " + d.getTime();
 
     g.createFile({
       isFolder: true,
       resource: {
         description: desc,
-        title: "Test folder " + d.getTime()
+        title: testFolderName
       }
     }, function (err, resp) {
 
@@ -183,21 +179,31 @@ describe('Using a gdrive-model to upload files', function (done) {
 });
 
 
+describe('Using a gdrive-model to search for files', function (done) {
+
+  this.timeout(timeout);
+
+  it('should search successfully for the folder created' , function(done) {
+ 
+    g.listFiles({
+      freetextSearch: "fullText contains '"+testFolderName+"'",
+      spaces: "drive"
+    }, function (err, items) {
+
+      should.not.exist(err);
+      items.length.should.equal(1)
+      items[0].id.should.equal(newFolderId)
+      done();
+    })
+
+  });
+
+});
+
 describe('Using a gdrive-model to remove files', function (done) {
 
   this.timeout(timeout);
-  var g;
 
-  before( function(done) {
-    g = new GdriveModel({
-      googleScopes: cfg.auth.scopes,
-      tokenFile: cfg.auth.tokenFile,
-      tokenDir: cfg.auth.tokenFileDir,
-      clientSecretFile: cfg.auth.clientSecretFile
-    });
-
-    done();
-  })
 
   it('should trash a single file (the content-passed-in file) from the google drive' , function(done) {
 
@@ -254,4 +260,4 @@ describe('Using a gdrive-model to remove files', function (done) {
 
   });
 
-})
+});

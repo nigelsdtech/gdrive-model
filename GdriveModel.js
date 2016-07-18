@@ -15,19 +15,16 @@ var
     _drive,
     _googleAuth;
 
-// Some default configs
-var _cfg = {
-}
 
 
 /**
  * Portus Interact constructor.
- * @param {object}   params Params to be passed in
- * @param {string}   params.userId - id of the drive to be accessed (defaults to 'me' if the argument isn't passed in
- * @param {string[]} params.googleScopes - Google drive scopes for which this object instance will have permissions
- * @param {string}   params.tokenFile - name of file on the local machine that contains the google access token
- * @param {string}   params.tokenDir - directory on the local machine in which the google access token lives
+ * @param {object}   params - Params to be passed in
  * @param {string}   params.clientSecretFile - full path to the client secret file to be used by google if an access token doesn't yet exist
+ * @param {string[]} params.googleScopes - Google drive scopes for which this object instance will have permissions
+ * @param {string}   params.tokenDir - directory on the local machine in which the google access token lives
+ * @param {string}   params.tokenFile - name of file on the local machine that contains the google access token
+ * @param {string}   params.userId - id of the drive to be accessed (defaults to 'me' if the argument isn't passed in
  * @constructor
  */
 function GdriveModel(params) {
@@ -135,11 +132,50 @@ method.createFile = function (params,callback) {
 
 
 /**
- * gdriveModel.trashFile
+ * gdriveModel.listFiles
  *
- * @desc Deletes a file from the drive.
+ * @desc List files in the drive.
  *
- * @alias gdriveModel.trashFile
+ * @alias gdriveModel.listFiles
+ * @memberOf! gdriveModel(v1)
+ *
+ * @param  {object} params - Parameters for request
+ * @param  {string} params.freetextSearch - Drive search
+ * @param  {string} params.spaces - As per the drive api
+ * @param  {callback} callback - The callback that handles the response. Returns callback(error,files[])
+ * @return {object} files[] - The google files resources
+ */
+method.listFiles = function (params,callback) {
+
+  var self = this;
+
+  // Authorize a client with the loaded credentials, then call the
+  // Gmail API.
+  self._googleAuth.authorize(function (err, auth) {
+
+    if (err) { callback(err); return null}
+
+    self._drive.files.list({
+      auth: auth,
+      userId: self.userId,
+      corpus: "domain",
+      spaces: (params.hasOwnProperty('spaces'))? params.spaces : null,
+      q: (params.hasOwnProperty('freetextSearch'))? params.freetextSearch : null,
+    }, function(err, response) {
+
+      if (err) { callback(err); return null }
+      callback(null,response.items)
+
+    });
+  });
+}
+
+/**
+ * gdriveModel.trashFiles
+ *
+ * @desc Deletes files from the drive.
+ *
+ * @alias gdriveModel.trashFiles
  * @memberOf! gdriveModel(v1)
  *
  * @param  {object} params - Parameters for request
@@ -155,7 +191,6 @@ method.trashFiles = function (params,callback) {
 
   var fileIds = params.fileIds,
       fileId  = fileIds[0];
-
 
   // Initialize params.responses if this isn't a recursive call
   var responses = (typeof params.responses !== 'undefined')? params.responses : [];
@@ -189,9 +224,7 @@ method.trashFiles = function (params,callback) {
       params.fileIds.splice(0,1)
 
       if (params.fileIds.length > 0) {
-
         params.responses = responses
-
         self.trashFiles(params, callback);
       } else {
         callback(null,responses)
