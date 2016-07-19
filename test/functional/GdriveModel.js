@@ -118,7 +118,7 @@ describe('Using a gdrive-model to upload files', function (done) {
 
       should.not.exist(err);
       resp.id.should.be.a('String')
-      resp.description.should.equal(desc)
+      resp.name.should.equal(testFolderName)
       newFolderId = resp.id;
       done();
     })
@@ -128,7 +128,8 @@ describe('Using a gdrive-model to upload files', function (done) {
   it('should upload a file with content passed in on the google drive' , function(done) {
 
     var d = new Date();
-    var desc =  "Test file created on " + d.toString();
+    var desc  = "Test file created on " + d.toString();
+    var title = "Delete this test file " + d.getTime();
 
     g.createFile({
       media: {
@@ -137,14 +138,13 @@ describe('Using a gdrive-model to upload files', function (done) {
       resource: {
         description: desc,
         mimeType: 'text/plain',
-        title: "Delete this test file " + d.getTime()
+        title: title
       }
     }, function (err, resp) {
 
       should.not.exist(err);
       resp.id.should.be.a('String')
-      resp.description.should.equal(desc)
-      resp.parents[0].id.should.not.equal(newFolderId)
+      resp.name.should.equal(title)
       newFileId = resp.id;
       done();
     });
@@ -155,6 +155,7 @@ describe('Using a gdrive-model to upload files', function (done) {
 
     var d = new Date();
     var desc =  "Test file created on " + d.toString();
+    var title = "Test file " + d.getTime()
 
     g.createFile({
       localFile: './test/data/fileToUpload.txt',
@@ -162,13 +163,14 @@ describe('Using a gdrive-model to upload files', function (done) {
         description: desc,
         mimeType: 'text/plain',
         parents: [{id: newFolderId}],
-        title: "Test file " + d.getTime()
+        title: title
       }
     }, function (err, resp) {
 
+      console.log('Resp: ' + JSON.stringify(resp))
       should.not.exist(err);
       resp.id.should.be.a('String')
-      resp.description.should.equal(desc)
+      resp.name.should.equal(title)
       resp.parents[0].id.should.equal(newFolderId)
       newUploadedLocalFileId = resp.id;
       done();

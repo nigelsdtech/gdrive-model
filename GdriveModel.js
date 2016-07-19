@@ -45,7 +45,7 @@ function GdriveModel(params) {
     params.clientSecretFile
   );
 
-  this._drive = google.drive('v2');
+  this._drive = google.drive('v3');
 
 }
 
@@ -109,17 +109,17 @@ method.createFile = function (params,callback) {
     if (err) { callback(err); return null}
 
 
-    self._drive.files.insert({
+    self._drive.files.create({
       auth: auth,
       userId: self.userId,
-      media: {
-        body: mediaBody
-      },
       resource: {
         description: params.resource.description,
-        mimeType: mimeType,
         parents: params.resource.parents,
-        title: params.resource.title
+        media: {
+          body: mediaBody
+        },
+        mimeType: mimeType,
+        name: params.resource.title
       }
     }, function(err, response) {
 
