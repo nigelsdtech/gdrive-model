@@ -164,14 +164,15 @@ describe('Using a gdrive-model to upload files', function (done) {
         mimeType: 'text/plain',
         parents: [{id: newFolderId}],
         title: title
-      }
+      },
+      retFields: ['id','name','parents']
     }, function (err, resp) {
 
       console.log('Resp: ' + JSON.stringify(resp))
       should.not.exist(err);
       resp.id.should.be.a('String')
       resp.name.should.equal(title)
-      resp.parents[0].id.should.equal(newFolderId)
+      resp.parents[0].should.equal(newFolderId)
       newUploadedLocalFileId = resp.id;
       done();
     });
@@ -186,15 +187,15 @@ describe('Using a gdrive-model to search for files', function (done) {
   this.timeout(timeout);
 
   it('should search successfully for the folder created' , function(done) {
- 
+
     g.listFiles({
-      freetextSearch: "fullText contains '"+testFolderName+"'",
+      freetextSearch: "name='"+testFolderName+"'",
       spaces: "drive"
-    }, function (err, items) {
+    }, function (err, files) {
 
       should.not.exist(err);
-      items.length.should.equal(1)
-      items[0].id.should.equal(newFolderId)
+      files.length.should.equal(1)
+      files[0].id.should.equal(newFolderId)
       done();
     })
 

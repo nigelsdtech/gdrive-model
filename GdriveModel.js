@@ -71,6 +71,7 @@ var method = GdriveModel.prototype;
  * @param  {string} params.resource.mimeType -
  * @param  {string[]} params.resource.parents - Ids of parent folders
  * @param  {string} params.resource.title - Name of the file
+ * @param  {string[]} params.retFields - Optional. The specific resource fields to return in the response.
  * @param  {callback} callback - The callback that handles the response. Returns callback(error,response)
  * @return {object} response - The google resource returned
  */
@@ -108,20 +109,27 @@ method.createFile = function (params,callback) {
 
     if (err) { callback(err); return null}
 
-
-    self._drive.files.create({
+    var fileArgs = {
       auth: auth,
       userId: self.userId,
       resource: {
         description: params.resource.description,
-        parents: params.resource.parents,
         media: {
           body: mediaBody
         },
         mimeType: mimeType,
         name: params.resource.title
       }
-    }, function(err, response) {
+    }
+
+    // Optional params to send to google
+    if (params.retFields) fileArgs.fields = params.retFields.join(',')
+    if (params.resource.parents) {
+      fileArgs.resource.parents = []
+      params.resource.parents.forEach(function(el) {fileArgs.resource.parents.push(el.id)});
+    }
+
+    self._drive.files.create(fileArgs, function(err, response) {
 
       if (err) { callback(err); return null}
 
@@ -164,7 +172,7 @@ method.listFiles = function (params,callback) {
     }, function(err, response) {
 
       if (err) { callback(err); return null }
-      callback(null,response.items)
+      callback(null,response.files)
 
     });
   });
@@ -201,15 +209,25 @@ method.trashFiles = function (params,callback) {
 
     if (err) { callback(err); return null}
 
-    var trashFunc = self._drive.files.trash;
-    if (params.deletePermanently) {
-      trashFunc = self._drive.files.delete;
-    }
-    trashFunc({
+    var fileArgs = {
       auth: auth,
       userId: self.userId,
       fileId: fileId
-    }, function(err, response) {
+    }
+
+    var trashFunc;
+    if (params.deletePermanently) {
+      trashFunc = self._drive.files.delete;
+    } else {
+      trashFunc = self._drive.files.update;
+      fileArgs.resource = {}
+      fileArgs.resource.trashed = true;
+    }
+
+
+    console.log('Args:')
+    console.log(fileArgs)
+    trashFunc(fileArgs, function(err, response) {
 
       if (err) {
         var action = 'trashing'
