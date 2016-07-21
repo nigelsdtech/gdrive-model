@@ -38,8 +38,7 @@
     "mocha": "~2.5.3"
   },
   "config": {
-    "appName": "gdrive-model",
-    "googleAuthScopes": "https://www.googleapis.com/auth/drive.file"
+    "appName": "gdrive-model"
   },
   "gitHead": "b8bd86a7f7a2e014a858b7b3c58f6afa16324e31",
   "readme": "# gdrive-model\nEasy nodejs interface for working with Google drive\n",

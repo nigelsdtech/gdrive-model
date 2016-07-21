@@ -39,7 +39,7 @@ function GdriveModel(params) {
   }
 
   this._googleAuth = new doGoogleAuth(
-    params.googleScopes,
+    params.googleScopes.join(" "),
     params.tokenFile,
     params.tokenDir,
     params.clientSecretFile
@@ -220,16 +220,15 @@ method.trashFiles = function (params,callback) {
       trashFunc = self._drive.files.delete;
     } else {
       trashFunc = self._drive.files.update;
-      fileArgs.resource = {}
-      fileArgs.resource.trashed = true;
+      fileArgs.resource = {trashed: true}
+      fileArgs.fields   = "id,trashed"
     }
 
 
-    console.log('Args:')
-    console.log(fileArgs)
     trashFunc(fileArgs, function(err, response) {
 
-      if (err) {
+      if (typeof err !== undefined && err != null) {
+      console.log('Error is ' + JSON.stringify(err))
         var action = 'trashing'
         if (params.deletePermanently) action = 'deleting';
 

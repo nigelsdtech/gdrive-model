@@ -168,7 +168,6 @@ describe('Using a gdrive-model to upload files', function (done) {
       retFields: ['id','name','parents']
     }, function (err, resp) {
 
-      console.log('Resp: ' + JSON.stringify(resp))
       should.not.exist(err);
       resp.id.should.be.a('String')
       resp.name.should.equal(title)
@@ -215,7 +214,7 @@ describe('Using a gdrive-model to remove files', function (done) {
       should.not.exist(err);
       resps.length.should.equal(1)
       for (var i = 0; i < resps.length; i++ ) {
-        resps[i].labels.trashed.should.equal(true)
+        resps[i].trashed.should.equal(true)
       }
       done();
     })
@@ -242,7 +241,7 @@ describe('Using a gdrive-model to remove files', function (done) {
       should.not.exist(err);
       resps.length.should.equal(2)
       for (var i = 0; i < resps.length; i++ ) {
-        resps[i].labels.trashed.should.equal(true)
+        resps[i].trashed.should.equal(true)
       }
       done();
     })
