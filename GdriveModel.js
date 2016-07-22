@@ -149,6 +149,7 @@ method.createFile = function (params,callback) {
  *
  * @param  {object} params - Parameters for request
  * @param  {string} params.freetextSearch - Drive search
+ * @param  {string[]} params.retFields - Optional. The specific resource fields to return in the response.
  * @param  {string} params.spaces - As per the drive api
  * @param  {callback} callback - The callback that handles the response. Returns callback(error,files[])
  * @return {object} files[] - The google files resources
@@ -163,13 +164,18 @@ method.listFiles = function (params,callback) {
 
     if (err) { callback(err); return null}
 
-    self._drive.files.list({
+    var fileArgs = {
       auth: auth,
       userId: self.userId,
-      corpus: "domain",
-      spaces: (params.hasOwnProperty('spaces'))? params.spaces : null,
-      q: (params.hasOwnProperty('freetextSearch'))? params.freetextSearch : null,
-    }, function(err, response) {
+      corpus: "domain"
+    }
+      //spaces: (params.hasOwnProperty('spaces'))? params.spaces : null,
+      //q: (params.hasOwnProperty('freetextSearch'))? params.freetextSearch : null
+    if (params.retFields) fileArgs.fields = params.retFields.join(',')
+    if (params.spaces) fileArgs.spaces = params.spaces
+    if (params.freetextSearch) fileArgs.q = params.freetextSearch
+
+    self._drive.files.list(fileArgs, function(err, response) {
 
       if (err) { callback(err); return null }
       callback(null,response.files)
