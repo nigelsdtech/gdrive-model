@@ -18,7 +18,7 @@ var
 
 
 /**
- * Portus Interact constructor.
+ * Gdrive Model constructor.
  * @param {object}   params - Params to be passed in
  * @param {string}   params.clientSecretFile - full path to the client secret file to be used by google if an access token doesn't yet exist
  * @param {string[]} params.googleScopes - Google drive scopes for which this object instance will have permissions
@@ -112,11 +112,11 @@ method.createFile = function (params,callback) {
     var fileArgs = {
       auth: auth,
       userId: self.userId,
+      media: {
+        body: mediaBody
+      },
       resource: {
         description: params.resource.description,
-        media: {
-          body: mediaBody
-        },
         mimeType: mimeType,
         name: params.resource.title
       }

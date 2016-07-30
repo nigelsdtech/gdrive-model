@@ -33,8 +33,9 @@
     "string-template": "0.2.1"
   },
   "devDependencies": {
-    "config": "~1.21.0",
     "chai": "~3.5.0",
+    "config": "~1.21.0",
+    "file-md5": "1.0.0",
     "mocha": "~2.5.3"
   },
   "config": {
