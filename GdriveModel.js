@@ -140,6 +140,50 @@ method.createFile = function (params,callback) {
 
 
 /**
+ * gdriveModel.getFile
+ *
+ * @desc Gets a file
+ *
+ * @alias gdriveModel.getFile
+ * @memberOf! gdriveModel(v1)
+ *
+ * @param  {object} params - Parameters for request
+ * @param  {boolean} params.fileId
+ * @param  {string[]} params.retFields - Optional. The specific resource fields to return in the response.
+ * @param  {callback} callback - The callback that handles the response. Returns callback(error,file)
+ * @return {object} response - The google resource returned
+ */
+method.getFile = function (params,callback) {
+
+  var self = this;
+
+  // Authorize a client with the loaded credentials, then call the
+  // Gdrive API.
+  self._googleAuth.authorize(function (err, auth) {
+
+    if (err) { callback(err); return null}
+
+    var fileArgs = {
+      auth: auth,
+      userId: self.userId,
+      fileId: params.fileId,
+      prettyPrint: false
+    }
+
+    // Optional params to send to google
+    if (params.retFields) fileArgs.fields = params.retFields.join(',')
+
+    self._drive.files.get(fileArgs, function(err, response) {
+
+      if (err) { callback(err); return null}
+
+      callback(null,response)
+    });
+  });
+}
+
+
+/**
  * gdriveModel.listFiles
  *
  * @desc List files in the drive.
