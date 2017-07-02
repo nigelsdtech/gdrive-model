@@ -210,11 +210,9 @@ method.listFiles = function (params,callback) {
 
     var fileArgs = {
       auth: auth,
-      userId: self.userId,
-      corpus: "domain"
+      userId: self.userId
     }
-      //spaces: (params.hasOwnProperty('spaces'))? params.spaces : null,
-      //q: (params.hasOwnProperty('freetextSearch'))? params.freetextSearch : null
+
     if (params.retFields) fileArgs.fields = params.retFields.join(',')
     if (params.spaces) fileArgs.spaces = params.spaces
     if (params.freetextSearch) fileArgs.q = params.freetextSearch
